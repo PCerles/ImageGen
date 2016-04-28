@@ -5,6 +5,12 @@
 
 - go into sample_images.py
 - change the TRAIN_SIZE variable
+```bash
+python sample_images.py
+cd ../visual-semantic-embedding/
+python compute_captions.py #adjusts sentence embedding for caption files
+```
+
 
 #Training the DCGAN
 
