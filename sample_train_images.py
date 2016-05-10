@@ -3,12 +3,12 @@ from shutil import copy
 images_dir = "/home/vashishtm/data/Coco/train2014/"
 caption_file = "/home/vashishtm/data/Coco/annotations/captions_train2014.json"
 labels_file = "/home/vashishtm/data/Coco/annotations/instances_train2014.json"
-caption_path = "captions/"
+caption_path = "captionsSmall3/"
 caption_data = json.load(open(caption_file))
 label_data = json.load(open(labels_file))
-output_dir = "data/images/"
+output_dir = "dataSmall3/images/"
 
-LABEL_CHOICE = "food"
+LABEL_CHOICE = "outdoor"
 
 print "Getting category map"
 categories = label_data['categories']
@@ -28,8 +28,10 @@ caption_images = caption_data['annotations']
 caption_map = {}
 print "getting captions..."
 for c in caption_images:
-	if c['image_id'] in image_ids and c['image_id'] not in caption_map:
-		caption_map[c['image_id']] = c['caption']
+	if c['image_id'] in image_ids:
+		if c['image_id'] not in caption_map.keys():
+			caption_map[c['image_id']] = []
+		caption_map[c['image_id']].append(c['caption'])
 images = os.listdir(images_dir)
 if not os.path.exists(caption_path):
 	os.mkdir(caption_path)
@@ -39,10 +41,11 @@ for x in images:
 	cap_file = x.split('.jpg')[0]
 	im_id = int(x.split('.jpg')[0].split('_')[-1])
 	if im_id in caption_map.keys():
-		print "Caption: " + caption_map[im_id]
-		copy(images_dir + x,output_dir)
-		with open(caption_path + cap_file + ".txt",'wb') as f:
-			f.write(caption_map[im_id])
-		f.close()
+		print "Captions: " + str(caption_map[im_id])
+		for ind in range(len(caption_map[im_id])):
+			copy(images_dir + x ,output_dir + cap_file + "_" + str(ind) + ".jpg")
+			with open(caption_path + cap_file + "_" + str(ind)  +".txt",'wb') as f:
+				f.write(caption_map[im_id][ind])
+			f.close()
 print "Done copying data..."
 
